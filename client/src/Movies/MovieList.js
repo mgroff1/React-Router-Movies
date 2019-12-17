@@ -1,55 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-
-const MovieList = props => {
+import axios from "axios";
+import { Link } from "react-router-dom";
+import MovieCard from "./MovieCard";
+const Server = 'http://localhost:3000/api/server/'
+const MovieList = (props) => {
+  
   const [movies, setMovies] = useState([])
+  console.log(Server)
   useEffect(() => {
     const getMovies = () => {
       axios
-        .get('http://localhost:5000/api/movies')
+        .get(Server)
         .then(response => {
-          setMovies({movies:response.data});
+          setMovies(response.data);
+          console.log(Server)
         })
         .catch(error => {
           console.error('Server Error', error);
         });
     }
-
+    
     getMovies();
   }, []);
 
-  return (
-    <div className="movie-list">
-      {movies.map(movie => (
-        <Link to={`/movies/${movie.id}`} key={movie.id} >
-          <MovieDetails movie={movie} />
-        </Link>
-      ))}
-    </div>
-  );
-}
-
-function MovieDetails({ movie }) {
-  const { title, director, metascore, stars } = movie;
-  return (
-    <div className="movie-card">
-      <h2>{title}</h2>
-      <div className="movie-director">
-        Director: <em>{director}</em>
+    return (
+      <div className="movie-list">
+        {movies.map(movie => {
+          return (
+          <div className="save-wrapper" key={movie.id}>
+            <Link to={`/movies/${movie.id}`} className="link">
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                title={movie.title}
+                director={movie.director}
+                metascore={movie.metascore}
+                stars={movie.stars}
+              />
+            </Link>
+          </div>
+        )})}
       </div>
-      <div className="movie-metascore">
-        Metascore: <strong>{metascore}</strong>
-      </div>
-      <h3>Actors</h3>
-
-      {stars.map(star => (
-        <div key={star} className="movie-star">
-          {star}
-        </div>
-      ))}
-    </div>
-  );
+    );
+  
 }
 
 export default MovieList;
