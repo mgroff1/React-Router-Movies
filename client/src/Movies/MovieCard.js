@@ -1,39 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import { Link } from "react-router-dom";
+import MovieCard from "./MovieCard";
 
-const MovieCard = props => {
-  return props.movie.stars ? (
-        <div className="movie-card">
-          <h2>{props.title}</h2>
-          <div className="movie-director">
-            Director: <em>{props.director}</em>
-          </div>
-          <div className="movie-metascore">
-            Metascore: <strong>{props.metascore}</strong>
-          </div>
-          <h3>Actors</h3>
+const MovieList = (props) => {
+  
+  const [movies, setMovies] = useState([])
 
-          {props.movie.stars.map(star => (
-            <div key={star} className="movie-star">
-              {star}
-            </div>
-          ))}
-        </div>
-  ) : (
-    <div className="movie-card">
-          <h2>Loading Movie Card...</h2>
-          <div className="movie-director">
-            Director: <em>Loading...</em>
-          </div>
-          <div className="movie-metascore">
-            Metascore: <strong>Loading...</strong>
-          </div>
-          <h3>Actors</h3>
-            <div className="movie-star">
-              Loading...
-            </div>
-          ))}
-        </div>
-  )
-};
+  useEffect(() => {
+    const getMovies = () => {
+      axios
+        .get('http://localhost:5000/api/movies')
+        .then(response => {
+          setMovies(response.data);
+        })
+        .catch(error => {
+          console.error('Server Error', error);
+        });
+    }
+    
+    getMovies();
+  }, []);
 
-export default MovieCard;
+    return (
+      <div className="movie-list">
+        {movies.map(movie => {
+          return (
+          <div className="save-wrapper" key={movie.id}>
+            <Link to={`/movies/${movie.id}`} className="link">
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                title={movie.title}
+                director={movie.director}
+                metascore={movie.metascore}
+                stars={movie.stars}
+              />
+            </Link>
+          </div>
+        )})}
+      </div>
+    );
+  
+}
+
+export default MovieList;
