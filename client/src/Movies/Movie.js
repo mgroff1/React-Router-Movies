@@ -3,28 +3,24 @@ import axios from "axios";
 import MovieCard from "./MovieCard";
 
 const Movie = (props) => {
-  const [movie, setMovie] = useState({});
-  const id = props.match.params.id;
+  const [movie, thisMovie] = useState({});
+  const mid = props.match.params.id;
   useEffect(() => {
-    
-    // change ^^^ that line and grab the id from the URL
-    // You will NEED to add a dependency array to this effect hook
-
        axios
-        .get(`http://localhost:5000/api/movies/${id}`)
+        .get(`http://localhost:5000/api/movies/${mid}`)
         .then(response => {
-          setMovie(response.data);
+          thisMovie(response.data);
         })
         .catch(error => {
           console.error(error);
         });
 
-  },[props.match.params.id]);
+  },[props.match.params]);
 
   const saveMovie = () => {
     const {addToSavedList} = props;
     addToSavedList(movie);
-  
+
   };
 
     if (!movie) {
