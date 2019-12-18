@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { Link } from "react-router-dom";
 import MovieCard from "./MovieCard";
-const Server = 'http://localhost:3000/api/server/'
+
 const MovieList = (props) => {
   
   const [movies, setMovies] = useState([])
-  console.log(Server)
+
   useEffect(() => {
     const getMovies = () => {
       axios
-        .get(Server)
+        .get('http://localhost:5000/api/movies')
         .then(response => {
           setMovies(response.data);
-          console.log(Server)
         })
         .catch(error => {
           console.error('Server Error', error);
